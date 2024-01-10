@@ -1,0 +1,318 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/api/v1/todo": {
+            "get": {
+                "description": "get all todo data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Todo"
+                ],
+                "summary": "GetAll",
+                "parameters": [
+                    {
+                        "enum": [
+                            "title",
+                            "date",
+                            "status"
+                        ],
+                        "type": "string",
+                        "x-enum-varnames": [
+                            "OrderByTitle",
+                            "OrderByDate",
+                            "OrderByStatus"
+                        ],
+                        "name": "order_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "reverse",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "IN_PROGRESS",
+                            "COMPLETED"
+                        ],
+                        "type": "string",
+                        "x-enum-varnames": [
+                            "StatusInProgress",
+                            "StatusCompleted"
+                        ],
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "title",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.Todo"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Message"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "create todo data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Todo"
+                ],
+                "summary": "Create",
+                "parameters": [
+                    {
+                        "description": "input create request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateTodoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Message"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/todo/{id}": {
+            "put": {
+                "description": "update todo data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Todo"
+                ],
+                "summary": "Update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "input update request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.UpdateTodoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Message"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Message"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Message"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "domain.CreateTodoRequest": {
+            "type": "object",
+            "required": [
+                "description",
+                "id",
+                "status",
+                "title"
+            ],
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "status": {
+                    "enum": [
+                        "IN_PROGRESS",
+                        "COMPLETED"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.Status"
+                        }
+                    ]
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 100
+                }
+            }
+        },
+        "domain.Message": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.OrderBy": {
+            "type": "string",
+            "enum": [
+                "title",
+                "date",
+                "status"
+            ],
+            "x-enum-varnames": [
+                "OrderByTitle",
+                "OrderByDate",
+                "OrderByStatus"
+            ]
+        },
+        "domain.Status": {
+            "type": "string",
+            "enum": [
+                "IN_PROGRESS",
+                "COMPLETED"
+            ],
+            "x-enum-varnames": [
+                "StatusInProgress",
+                "StatusCompleted"
+            ]
+        },
+        "domain.Todo": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/domain.Status"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.UpdateTodoRequest": {
+            "type": "object",
+            "required": [
+                "description",
+                "status",
+                "title"
+            ],
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "status": {
+                    "enum": [
+                        "IN_PROGRESS",
+                        "COMPLETED"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.Status"
+                        }
+                    ]
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 100
+                }
+            }
+        }
+    }
+}

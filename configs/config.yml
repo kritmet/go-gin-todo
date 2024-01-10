@@ -1,0 +1,8 @@
+APP:
+  PORT: 8000
+
+SWAGGER:
+  TITLE: "TODO API Docs"
+  DESCRIPTION: "TODO API is to do list"
+  VERSION: "1.0"
+  HOST: "localhost:8000"

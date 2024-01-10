@@ -1,0 +1,210 @@
+definitions:
+  domain.CreateTodoRequest:
+    properties:
+      date:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/domain.Status'
+        enum:
+        - IN_PROGRESS
+        - COMPLETED
+      title:
+        maxLength: 100
+        type: string
+    required:
+    - description
+    - id
+    - status
+    - title
+    type: object
+  domain.Message:
+    properties:
+      message:
+        type: string
+    type: object
+  domain.OrderBy:
+    enum:
+    - title
+    - date
+    - status
+    type: string
+    x-enum-varnames:
+    - OrderByTitle
+    - OrderByDate
+    - OrderByStatus
+  domain.Status:
+    enum:
+    - IN_PROGRESS
+    - COMPLETED
+    type: string
+    x-enum-varnames:
+    - StatusInProgress
+    - StatusCompleted
+  domain.Todo:
+    properties:
+      date:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      status:
+        $ref: '#/definitions/domain.Status'
+      title:
+        type: string
+    type: object
+  domain.UpdateTodoRequest:
+    properties:
+      date:
+        type: string
+      description:
+        type: string
+      image:
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/domain.Status'
+        enum:
+        - IN_PROGRESS
+        - COMPLETED
+      title:
+        maxLength: 100
+        type: string
+    required:
+    - description
+    - status
+    - title
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/todo:
+    get:
+      consumes:
+      - application/json
+      description: get all todo data
+      parameters:
+      - enum:
+        - title
+        - date
+        - status
+        in: query
+        name: order_by
+        type: string
+        x-enum-varnames:
+        - OrderByTitle
+        - OrderByDate
+        - OrderByStatus
+      - in: query
+        name: reverse
+        type: boolean
+      - enum:
+        - IN_PROGRESS
+        - COMPLETED
+        in: query
+        name: status
+        type: string
+        x-enum-varnames:
+        - StatusInProgress
+        - StatusCompleted
+      - in: query
+        name: title
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Todo'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.Message'
+      summary: GetAll
+      tags:
+      - Todo
+    post:
+      consumes:
+      - application/json
+      description: create todo data
+      parameters:
+      - description: input create request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateTodoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.Message'
+      summary: Create
+      tags:
+      - Todo
+  /api/v1/todo/{id}:
+    put:
+      consumes:
+      - application/json
+      description: update todo data
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: input update request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UpdateTodoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.Message'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.Message'
+      summary: Update
+      tags:
+      - Todo
+swagger: "2.0"
